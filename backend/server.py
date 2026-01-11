@@ -284,7 +284,7 @@ async def register(user_data: UserCreate):
     await db.users.insert_one(user_dict)
     
     token = create_token(user_dict["id"], user_dict["email"], user_dict["role"])
-    user_response = {k: v for k, v in user_dict.items() if k != "password"}
+    user_response = {k: v for k, v in user_dict.items() if k not in ["password", "_id"]}
     
     return {"token": token, "user": user_response}
 
@@ -400,7 +400,8 @@ async def book_session(booking: SessionBookingCreate, current_user: dict = Depen
     }
     
     await db.sessions.insert_one(session_dict)
-    return {"session": session_dict, "message": "Session booked successfully"}
+    session_response = {k: v for k, v in session_dict.items() if k != "_id"}
+    return {"session": session_response, "message": "Session booked successfully"}
 
 @api_router.get("/sessions/client")
 async def get_client_sessions(current_user: dict = Depends(get_current_user)):
@@ -489,7 +490,8 @@ async def get_challenges(current_user: dict = Depends(get_current_user)):
                 "created_at": datetime.now(timezone.utc).isoformat()
             }
             await db.challenges.insert_one(challenge)
-            user_challenges.append(challenge)
+            challenge_response = {k: v for k, v in challenge.items() if k != "_id"}
+            user_challenges.append(challenge_response)
     
     return {"challenges": user_challenges, "phase": phase, "category": category}
 
@@ -597,7 +599,8 @@ async def create_review(review: ReviewCreate, current_user: dict = Depends(get_c
     }
     
     await db.reviews.insert_one(review_dict)
-    return review_dict
+    review_response = {k: v for k, v in review_dict.items() if k != "_id"}
+    return review_response
 
 @api_router.get("/reviews/trainer/{trainer_id}")
 async def get_trainer_reviews(trainer_id: str):
