@@ -1,34 +1,266 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* DoorGuard Custom Styles */
+
+/* Hero section with overlay */
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(9, 9, 11, 0.85), rgba(9, 9, 11, 0.95));
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
+/* Trainer card hover effect */
+.trainer-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.trainer-card:hover {
+  border-color: rgba(192, 160, 98, 0.5);
+  transform: translateY(-4px);
+}
+
+.trainer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #C0A062, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.trainer-card:hover::before {
+  opacity: 1;
+}
+
+/* Belt progress bar */
+.belt-progress {
+  display: flex;
+  gap: 4px;
+  height: 8px;
+}
+
+.belt-segment {
+  flex: 1;
+  border-radius: 4px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.belt-segment.active {
+  transform: scaleY(1.2);
+  box-shadow: 0 0 12px currentColor;
+}
+
+.belt-segment.completed {
+  opacity: 1;
+}
+
+.belt-segment.future {
+  opacity: 0.3;
+  border: 1px solid currentColor;
+  background: transparent !important;
+}
+
+/* Category cards */
+.category-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(192, 160, 98, 0.2);
+}
+
+.category-card img {
+  transition: transform 0.5s ease;
+}
+
+.category-card:hover img {
+  transform: scale(1.1);
+}
+
+/* Badge styles */
+.badge-verified {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60A5FA;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.badge-elite {
+  background: rgba(192, 160, 98, 0.1);
+  color: #D4AF37;
+  border: 1px solid rgba(192, 160, 98, 0.2);
+}
+
+.badge-specialist {
+  background: rgba(168, 85, 247, 0.1);
+  color: #A855F7;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Session card */
+.session-card {
+  border-left: 4px solid #C0A062;
+  background: rgba(39, 39, 42, 0.3);
+  transition: background 0.3s ease;
+}
+
+.session-card:hover {
+  background: rgba(39, 39, 42, 0.5);
+}
+
+/* Challenge card */
+.challenge-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.challenge-card.completed {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.challenge-card.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: #22C55E;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Emergency button */
+.emergency-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #EF4444;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.emergency-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
+}
+
+/* Input focus states */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #C0A062 !important;
+  box-shadow: 0 0 0 2px rgba(192, 160, 98, 0.2);
+}
+
+/* Button variants */
+.btn-primary {
+  background: #C0A062;
+  color: #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #D4AF37;
+  box-shadow: 0 0 20px rgba(192, 160, 98, 0.4);
+}
+
+/* Navigation */
+.nav-link {
+  position: relative;
+  color: #A1A1AA;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: #FAFAFA;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #C0A062;
+}
+
+/* Stats card */
+.stats-card {
+  background: rgba(39, 39, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(192, 160, 98, 0.3);
+}
+
+/* Rating stars */
+.star-filled {
+  color: #D4AF37;
+}
+
+.star-empty {
+  color: #3F3F46;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #27272A;
+  border-top-color: #C0A062;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile menu */
+@media (max-width: 768px) {
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 9, 11, 0.98);
+    z-index: 100;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    gap: 24px;
+  }
 }
