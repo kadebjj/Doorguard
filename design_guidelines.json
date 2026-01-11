@@ -1,0 +1,158 @@
+{
+  "brand_identity": {
+    "name": "DoorGuard",
+    "archetype": "Tactical Luxury",
+    "vibe": "Elite, Secure, Disciplined, Private",
+    "description": "A premium marketplace connecting civilians with vetted combat and fitness experts. Think 'Equinox meets Private Security'.",
+    "design_principles": [
+      "Fusion: Luxury Aesthetics + Tactical Functionality",
+      "Trust through Clarity: Verified badges and safety features must be prominent but elegant",
+      "Dark Mode First: The app lives in the 'Shadows' (Privacy/Security)",
+      "Gamification as Rank: Belt progression is the core user journey"
+    ]
+  },
+  "typography": {
+    "headings": {
+      "family": "Manrope",
+      "weights": ["600", "700", "800"],
+      "usage": "All section headers, hero text, and major calls to action. Use tight tracking (-0.02em)."
+    },
+    "body": {
+      "family": "Inter",
+      "weights": ["400", "500"],
+      "usage": "Paragraphs, inputs, data tables. High legibility focus."
+    },
+    "accent": {
+      "family": "Oswald",
+      "weights": ["500"],
+      "usage": "Belt Ranks, Challenge Points, 'Verified' Badges. Uppercase only."
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "default": "#09090B",
+        "paper": "#18181B",
+        "subtle": "#27272A"
+      },
+      "primary": {
+        "main": "#C0A062",
+        "light": "#D4AF37",
+        "dark": "#8F7540",
+        "foreground": "#000000",
+        "description": "Metallic Gold/Bronze. Used for 'Premium' actions, Elite Trainer badges, and primary CTAs."
+      },
+      "secondary": {
+        "main": "#27272A",
+        "foreground": "#FAFAFA",
+        "description": "Zinc/Slate. Used for structural elements, borders, and secondary buttons."
+      },
+      "accent": {
+        "main": "#3B82F6",
+        "foreground": "#FFFFFF",
+        "description": "Safety Blue. Used for 'Verified' badges, trust indicators, and info states."
+      },
+      "destructive": {
+        "main": "#EF4444",
+        "foreground": "#FFFFFF",
+        "description": "Alert Red. Used ONLY for the Emergency Button and destructive actions."
+      },
+      "text": {
+        "primary": "#FAFAFA",
+        "secondary": "#A1A1AA",
+        "muted": "#52525B"
+      }
+    },
+    "belt_system": {
+      "white": "#FAFAFA",
+      "blue": "#3B82F6",
+      "purple": "#A855F7",
+      "brown": "#78350F",
+      "black": "#171717"
+    }
+  },
+  "visual_enhancers": {
+    "borders": "1px solid rgba(255, 255, 255, 0.08)",
+    "glassmorphism": "backdrop-filter: blur(12px); background: rgba(9, 9, 11, 0.7); border: 1px solid rgba(255, 255, 255, 0.05);",
+    "shadows": {
+      "card": "0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3)",
+      "glow": "0 0 20px rgba(192, 160, 98, 0.15)"
+    },
+    "textures": "Subtle noise overlay (opacity 0.03) on the main background to prevent banding and add 'tactile' feel."
+  },
+  "layout_strategies": {
+    "marketing": {
+      "grid": "Tetris Grid (Asymmetrical)",
+      "spacing": "Generous (p-12 to p-24)",
+      "container": "max-w-7xl mx-auto"
+    },
+    "dashboard": {
+      "grid": "Control Room (Dense, Data-heavy)",
+      "spacing": "Tight (p-4 to p-6)",
+      "container": "w-full h-screen flex overflow-hidden"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary-light rounded-sm font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(192,160,98,0.3)] transition-all",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-sm font-medium",
+      "emergency": "bg-destructive text-white rounded-full w-16 h-16 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)] animate-pulse"
+    },
+    "cards": {
+      "trainer": "bg-card border border-border/50 hover:border-primary/50 transition-colors group relative overflow-hidden. Add a 'scanline' effect on hover.",
+      "session": "bg-secondary/30 border-l-4 border-primary rounded-r-md p-4"
+    },
+    "belt_progress": {
+      "style": "Horizontal segmented bar. Active segment glows. Completed segments are solid. Future segments are outlined.",
+      "animation": "Fill animation on rank up."
+    },
+    "badges": {
+      "verified": "bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs px-2 py-0.5 rounded-full flex items-center gap-1",
+      "elite": "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-xs px-2 py-0.5 rounded-full flex items-center gap-1"
+    }
+  },
+  "image_urls": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1570442387127-66eb80e00938?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxib3hpbmclMjBnbG92ZXMlMjBkYXJrJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NjgxMjIyMTZ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Close up of boxing gloves in dark lighting. Use as Hero Background with heavy overlay (bg-black/80).",
+      "category": "hero"
+    },
+    "features_jiujitsu": {
+      "url": "https://images.unsplash.com/photo-1542937306-d1056fdd367a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxqaXUlMjBqaXRzdSUyMHRyYWluaW5nJTIwaG9tZXxlbnwwfHx8fDE3NjgxMjIyMTF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Two men sparring/dueling. Use for 'Self-Defense' or 'Jiu-Jitsu' category card.",
+      "category": "feature"
+    },
+    "features_training": {
+      "url": "https://images.pexels.com/photos/8292833/pexels-photo-8292833.jpeg",
+      "description": "Personal trainer helping client. Use for 'Personal Training' category card.",
+      "category": "feature"
+    },
+    "auth_background": {
+      "url": "https://images.unsplash.com/photo-1598300606161-4019d0dfec28?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwzfHxqaXUlMjBqaXRzdSUyMHRyYWluaW5nJTIwaG9tZXxlbnwwfHx8fDE3NjgxMjIyMTF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Dojo floor/training area. Use for Login/Register split screen background.",
+      "category": "auth"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Implement the 'Tactical Luxury' theme by strictly adhering to the Zinc-950 background and Gold accents.",
+    "Do NOT use standard Shadcn cards for the Trainer Profiles. Create a custom 'Dossier' style card.",
+    "The Belt System is the core gamification. Ensure the colors (White -> Black) are accurate to BJJ standards.",
+    "Safety First: The Emergency Button must be accessible but protected from accidental clicks (use a long-press or slide interaction).",
+    "Use 'Manrope' for all headings. If not available via Google Fonts, use 'Inter' with tight tracking.",
+    "For the Dashboard, use the 'Control Room' grid layout. High density, low fluff.",
+    "Ensure all images have a 'dimming' layer (opacity-50 or similar) when text is placed over them."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Avoid this.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'.",
+    "You MUST NOT center align the app container.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations.",
+    "NEVER use AI assistant Emoji characters like 🤖🧠 etc.",
+    "Every interaction needs micro-animations.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "All interactive elements MUST include 'data-testid' attribute."
+  ]
+}
