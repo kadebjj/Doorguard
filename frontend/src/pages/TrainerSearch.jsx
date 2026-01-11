@@ -61,14 +61,14 @@ const TrainerSearch = () => {
             </div>
             
             <Select
-              value={filters.category}
-              onValueChange={(value) => setFilters({ ...filters, category: value })}
+              value={filters.category || "all"}
+              onValueChange={(value) => setFilters({ ...filters, category: value === "all" ? "" : value })}
             >
               <SelectTrigger className="w-full sm:w-[200px] bg-zinc-800/50 border-zinc-700 text-white" data-testid="filter-category">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent className="bg-[#18181B] border-zinc-800">
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 {Object.entries(CATEGORY_NAMES).map(([key, name]) => (
                   <SelectItem key={key} value={key}>{name}</SelectItem>
                 ))}
