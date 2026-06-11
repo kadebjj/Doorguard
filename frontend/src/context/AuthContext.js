@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { getMe } from '../lib/api';
 import { getAuthData, setAuthData, clearAuthData } from '../lib/utils';
 
@@ -33,22 +33,22 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const loginUser = (token, userData) => {
+  const loginUser = useCallback((token, userData) => {
     setAuthData(token, userData);
     setUser(userData);
-  };
+  }, []);
 
-  const logoutUser = () => {
+  const logoutUser = useCallback(() => {
     clearAuthData();
     setUser(null);
-  };
+  }, []);
 
-  const updateUser = (userData) => {
+  const updateUser = useCallback((userData) => {
     setUser(userData);
     localStorage.setItem('doorguard_user', JSON.stringify(userData));
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const response = await getMe();
       setUser(response.data);
@@ -57,23 +57,22 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return null;
     }
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        loginUser,
-        logoutUser,
-        updateUser,
-        refreshUser,
-        isAuthenticated: !!user,
-        isClient: user?.role === 'client',
-        isTrainer: user?.role === 'trainer',
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      loginUser,
+      logoutUser,
+      updateUser,
+      refreshUser,
+      isAuthenticated: !!user,
+      isClient: user?.role === 'client',
+      isTrainer: user?.role === 'trainer',
+    }),
+    [user, loading, loginUser, logoutUser, updateUser, refreshUser]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

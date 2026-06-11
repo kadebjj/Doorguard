@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   getEmergencyContacts,
   updateEmergencyContacts,
@@ -39,11 +39,7 @@ const Safety = () => {
   const [report, setReport] = useState({ concern_type: 'safety', description: '' });
   const [submittingReport, setSubmittingReport] = useState(false);
 
-  useEffect(() => {
-    loadAll();
-  }, []);
-
-  const loadAll = async () => {
+  const loadAll = useCallback(async () => {
     try {
       const [c, a, r] = await Promise.all([
         getEmergencyContacts(),
@@ -58,7 +54,11 @@ const Safety = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
 
   const addContact = () =>
     setContacts([...contacts, { name: '', phone: '', relationship: '' }]);

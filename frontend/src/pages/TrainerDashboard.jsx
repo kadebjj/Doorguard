@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getTrainerStats, getTrainerSessions, updateSessionStatus } from '../lib/api';
 import { Button } from '../components/ui/button';
@@ -20,11 +20,7 @@ const TrainerDashboard = () => {
 
   const profile = user?.trainer_profile || {};
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [statsRes, sessionsRes] = await Promise.all([
         getTrainerStats(),
@@ -37,7 +33,11 @@ const TrainerDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleSessionAction = async (sessionId, status) => {
     setActionLoading(sessionId);

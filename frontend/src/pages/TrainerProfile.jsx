@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTrainer, bookSession, createCheckout } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
@@ -47,11 +47,7 @@ const TrainerProfile = () => {
     notes: '',
   });
 
-  useEffect(() => {
-    loadTrainer();
-  }, [id]);
-
-  const loadTrainer = async () => {
+  const loadTrainer = useCallback(async () => {
     try {
       const response = await getTrainer(id);
       setTrainer(response.data);
@@ -61,7 +57,11 @@ const TrainerProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    loadTrainer();
+  }, [loadTrainer]);
 
   const handleBookSession = async () => {
     if (!bookingData.category || !bookingData.scheduled_date || !bookingData.scheduled_time || !bookingData.location_address) {
@@ -225,7 +225,7 @@ const TrainerProfile = () => {
                   <div className="space-y-1">
                     {(profile.certifications || []).length > 0 ? (
                       profile.certifications.map((cert, i) => (
-                        <div key={i} className="flex items-center gap-2 text-zinc-300">
+                        <div key={`${cert}-${i}`} className="flex items-center gap-2 text-zinc-300">
                           <CheckCircle className="w-4 h-4 text-green-400" />
                           {cert}
                         </div>

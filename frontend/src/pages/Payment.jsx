@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { getPaymentStatus } from '../lib/api';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
@@ -10,15 +10,7 @@ const PaymentSuccess = () => {
   const [status, setStatus] = useState('checking');
   const sessionId = searchParams.get('session_id');
 
-  useEffect(() => {
-    if (sessionId) {
-      pollPaymentStatus(sessionId, 0);
-    } else {
-      setStatus('error');
-    }
-  }, [sessionId]);
-
-  const pollPaymentStatus = async (stripeSessionId, attempts) => {
+  const pollPaymentStatus = useCallback(async (stripeSessionId, attempts) => {
     const maxAttempts = 5;
     const pollInterval = 2000;
 
@@ -43,7 +35,15 @@ const PaymentSuccess = () => {
       console.error('Error checking payment status:', error);
       setStatus('error');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (sessionId) {
+      pollPaymentStatus(sessionId, 0);
+    } else {
+      setStatus('error');
+    }
+  }, [sessionId, pollPaymentStatus]);
 
   return (
     <div className="min-h-screen bg-[#09090B] flex items-center justify-center px-4" data-testid="payment-success">

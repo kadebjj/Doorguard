@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getChallenges, completeChallenge, phaseUp } from '../lib/api';
 import { Button } from '../components/ui/button';
@@ -19,11 +19,7 @@ const Challenges = () => {
 
   const profile = user?.client_profile || {};
 
-  useEffect(() => {
-    loadChallenges();
-  }, []);
-
-  const loadChallenges = async () => {
+  const loadChallenges = useCallback(async () => {
     try {
       const response = await getChallenges();
       setChallenges(response.data.challenges || []);
@@ -32,7 +28,11 @@ const Challenges = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadChallenges();
+  }, [loadChallenges]);
 
   const handleComplete = async (challengeId) => {
     setCompleting(challengeId);

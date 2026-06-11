@@ -19,8 +19,9 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://trainer-marketplace-
 API = f"{BASE_URL}/api"
 
 # Test client provided in /app/memory/test_credentials.md (has emergency contact + history)
-EXISTING_CLIENT_EMAIL = "client_sft_1781136145@test.com"
-EXISTING_CLIENT_PASSWORD = "Test1234!"
+EXISTING_CLIENT_EMAIL = os.environ.get("TEST_CLIENT_EMAIL", "client_sft_1781136145@test.com")
+EXISTING_CLIENT_PASSWORD = os.environ.get("TEST_CLIENT_PASSWORD", "Test1234!")
+DEFAULT_TEST_PASSWORD = os.environ.get("TEST_CLIENT_PASSWORD", "Test1234!")
 
 
 # ----------------- Helpers / Fixtures -----------------
@@ -33,7 +34,7 @@ def _register(role: str, prefix: str):
     email = f"test_{prefix}_{_ts()}@test.com"
     payload = {
         "email": email,
-        "password": "Test1234!",
+        "password": DEFAULT_TEST_PASSWORD,
         "full_name": f"TEST {role.title()} {prefix}",
         "role": role,
         "city": "Austin",
@@ -91,7 +92,7 @@ class TestTrainerTrustSignals:
     def test_new_trainer_has_bg_check_cleared_and_id_verified(self, trainer_user):
         tp = trainer_user["user"].get("trainer_profile") or {}
         assert tp.get("background_check_status") == "cleared", tp
-        assert tp.get("id_verified") is True, tp
+        assert tp.get("id_verified"), tp
 
     def test_list_trainers_returns_trust_fields(self, trainer_user):
         r = requests.get(f"{API}/trainers", timeout=20)
@@ -103,14 +104,14 @@ class TestTrainerTrustSignals:
         assert match is not None, "Newly registered trainer missing from /api/trainers"
         tp = match.get("trainer_profile") or {}
         assert tp.get("background_check_status") == "cleared"
-        assert tp.get("id_verified") is True
+        assert tp.get("id_verified")
 
     def test_get_trainer_by_id_has_trust_fields(self, trainer_user):
         r = requests.get(f"{API}/trainers/{trainer_user['user']['id']}", timeout=20)
         assert r.status_code == 200
         tp = r.json().get("trainer_profile") or {}
         assert tp.get("background_check_status") == "cleared"
-        assert tp.get("id_verified") is True
+        assert tp.get("id_verified")
 
 
 # ----------------- Emergency contacts -----------------
@@ -262,9 +263,8 @@ class TestSessionCheckInOut:
                          headers=_h(client_user["token"]), timeout=20)
         assert r.status_code == 200
         sess = next(s for s in r.json() if s["id"] == booked_session["id"])
-        assert sess.get("safety_checked_in") is True
+        assert sess.get("safety_checked_in")
         assert sess.get("checked_in_at")
-
     def test_checkout_by_owner(self, client_user, booked_session):
         r = requests.post(f"{API}/sessions/{booked_session['id']}/checkout",
                          headers=_h(client_user["token"]), timeout=20)
@@ -275,7 +275,7 @@ class TestSessionCheckInOut:
         r = requests.get(f"{API}/sessions/client",
                          headers=_h(client_user["token"]), timeout=20)
         sess = next(s for s in r.json() if s["id"] == booked_session["id"])
-        assert sess.get("safety_checked_out") is True
+        assert sess.get("safety_checked_out")
         assert sess.get("checked_out_at")
 
     def test_checkin_by_other_user_forbidden(self, other_client_user, booked_session):

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getClientStats, getChallenges, getClientSessions, selectCategory } from '../lib/api';
 import { Button } from '../components/ui/button';
@@ -22,11 +22,7 @@ const ClientDashboard = () => {
 
   const profile = user?.client_profile || {};
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [statsRes, challengesRes, sessionsRes] = await Promise.all([
         getClientStats(),
@@ -41,7 +37,11 @@ const ClientDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleSelectCategory = async (category) => {
     try {

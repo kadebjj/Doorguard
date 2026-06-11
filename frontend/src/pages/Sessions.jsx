@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getClientSessions, getTrainerSessions, updateSessionStatus, createReview, sessionCheckIn, sessionCheckOut } from '../lib/api';
 import { Button } from '../components/ui/button';
@@ -20,11 +20,7 @@ const Sessions = () => {
   const [reviewSession, setReviewSession] = useState(null);
   const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
 
-  useEffect(() => {
-    loadSessions();
-  }, []);
-
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     try {
       const response = isClient ? await getClientSessions() : await getTrainerSessions();
       setSessions(response.data || []);
@@ -33,7 +29,11 @@ const Sessions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isClient]);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
 
   const handleStatusUpdate = async (sessionId, status) => {
     setActionLoading(sessionId);

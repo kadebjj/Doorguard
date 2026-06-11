@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getTrainers } from '../lib/api';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
@@ -15,11 +15,7 @@ const TrainerSearch = () => {
     city: '',
   });
 
-  useEffect(() => {
-    loadTrainers();
-  }, [filters]);
-
-  const loadTrainers = async () => {
+  const loadTrainers = useCallback(async () => {
     setLoading(true);
     try {
       const params = {};
@@ -33,7 +29,11 @@ const TrainerSearch = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    loadTrainers();
+  }, [loadTrainers]);
 
   return (
     <div className="min-h-screen bg-[#09090B] py-8 px-4 sm:px-6 lg:px-8" data-testid="trainer-search">

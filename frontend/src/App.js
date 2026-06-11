@@ -126,6 +126,14 @@ const AppRoutes = () => {
   );
 };
 
+const toasterOptions = {
+  style: {
+    background: '#18181B',
+    border: '1px solid #27272A',
+    color: '#FAFAFA',
+  },
+};
+
 function App() {
   return (
     <BrowserRouter>
@@ -135,13 +143,7 @@ function App() {
         <Toaster 
           position="top-right" 
           richColors 
-          toastOptions={{
-            style: {
-              background: '#18181B',
-              border: '1px solid #27272A',
-              color: '#FAFAFA',
-            },
-          }}
+          toastOptions={toasterOptions}
         />
       </AuthProvider>
     </BrowserRouter>
