@@ -864,8 +864,13 @@ async def session_checkout(session_id: str, current_user: dict = Depends(get_cur
     now = datetime.now(timezone.utc).isoformat()
     await db.sessions.update_one(
         {"id": session_id},
-        {"$set": {"safety_checked_out": True, "checked_out_at": now}}
+        {"$set": {"safety_checked_out": True, "checked_out_at": now, "status": "completed"}}
     )
+    if session.get("status") != "completed":
+        await db.users.update_one(
+            {"id": session["client_id"]},
+            {"$inc": {"client_profile.completed_sessions": 1}}
+        )
     return {"message": "Checked out safely. Session marked complete.", "checked_out_at": now}
 
 # ============== STATS ROUTES ==============
