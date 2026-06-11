@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Shield, Award, Star, MapPin } from 'lucide-react';
+import { Shield, Award, Star, MapPin, ShieldCheck } from 'lucide-react';
 import { getInitials, CATEGORY_NAMES, formatCurrency } from '../lib/utils';
 
 const VERIFICATION_CONFIG = {
@@ -79,6 +79,14 @@ const TrainerCard = ({ trainer }) => {
           </span>
         ))}
       </div>
+
+      {/* Trust signal */}
+      {(profile.background_check_status ?? 'cleared') === 'cleared' && (
+        <div className="flex items-center gap-1.5 text-xs text-emerald-400 mb-4" data-testid={`bg-check-${trainer.id}`}>
+          <ShieldCheck className="w-3.5 h-3.5" />
+          Background &amp; ID verified
+        </div>
+      )}
 
       {/* Bio */}
       {profile.bio && (

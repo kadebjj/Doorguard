@@ -13,7 +13,9 @@ import TrainerSearch from "./pages/TrainerSearch";
 import TrainerProfile from "./pages/TrainerProfile";
 import Sessions from "./pages/Sessions";
 import Challenges from "./pages/Challenges";
+import Safety from "./pages/Safety";
 import { PaymentSuccess, PaymentCancel } from "./pages/Payment";
+import EmergencySOS from "./components/EmergencySOS";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -105,6 +107,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } 
       />
+      <Route 
+        path="/safety" 
+        element={
+          <ProtectedRoute>
+            <Layout><Safety /></Layout>
+          </ProtectedRoute>
+        } 
+      />
       
       {/* Payment Routes */}
       <Route path="/payment/success" element={<Layout><PaymentSuccess /></Layout>} />
@@ -121,6 +131,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
+        <EmergencySOS />
         <Toaster 
           position="top-right" 
           richColors 

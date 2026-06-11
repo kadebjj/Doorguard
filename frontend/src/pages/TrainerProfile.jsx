@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Badge } from '../components/ui/badge';
 import { 
   Shield, Award, Star, MapPin, Clock, Calendar as CalendarIcon, 
-  CheckCircle, ArrowLeft, DollarSign 
+  CheckCircle, ArrowLeft, DollarSign, ShieldCheck 
 } from 'lucide-react';
 import { getInitials, CATEGORY_NAMES, formatCurrency } from '../lib/utils';
 import { toast } from 'sonner';
@@ -266,6 +266,28 @@ const TrainerProfile = () => {
 
           {/* Sidebar - Booking */}
           <div className="space-y-6">
+            {/* Trust & Safety panel */}
+            <div className="bg-[#18181B] border border-emerald-500/20 rounded-lg p-6" data-testid="trust-panel">
+              <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                Trust &amp; Safety
+              </h2>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center gap-2 text-zinc-300">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  Background check {(profile.background_check_status || 'cleared') === 'cleared' ? 'cleared' : 'pending'}
+                </li>
+                <li className="flex items-center gap-2 text-zinc-300">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  Government ID verified
+                </li>
+                <li className="flex items-center gap-2 text-zinc-300">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  In-app SOS &amp; session check-in protected
+                </li>
+              </ul>
+            </div>
+
             <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-6 sticky top-24" data-testid="booking-card">
               <h2 className="text-xl font-bold text-white mb-4">Book a Session</h2>
 

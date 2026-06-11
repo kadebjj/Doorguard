@@ -70,4 +70,15 @@ export const getPaymentStatus = (stripeSessionId) => api.get(`/payments/status/$
 export const getTrainerStats = () => api.get('/stats/trainer');
 export const getClientStats = () => api.get('/stats/client');
 
+// Safety & Trust
+export const getEmergencyContacts = () => api.get('/safety/emergency-contacts');
+export const updateEmergencyContacts = (contacts) => api.put('/safety/emergency-contacts', { contacts });
+export const triggerSOS = (data) => api.post('/safety/sos', data);
+export const getSafetyAlerts = () => api.get('/safety/alerts');
+export const resolveAlert = (alertId) => api.put(`/safety/alerts/${alertId}/resolve`);
+export const createIncidentReport = (data) => api.post('/safety/report', data);
+export const getIncidentReports = () => api.get('/safety/reports');
+export const sessionCheckIn = (sessionId) => api.post(`/sessions/${sessionId}/checkin`);
+export const sessionCheckOut = (sessionId) => api.post(`/sessions/${sessionId}/checkout`);
+
 export default api;

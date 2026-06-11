@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from './ui/dropdown-menu';
-import { Shield, Menu, X, User, LogOut, LayoutDashboard, Search, Calendar } from 'lucide-react';
+import { Shield, Menu, X, User, LogOut, LayoutDashboard, Search, Calendar, ShieldCheck } from 'lucide-react';
 import { getInitials } from '../lib/utils';
 
 const Layout = ({ children }) => {
@@ -30,6 +30,7 @@ const Layout = ({ children }) => {
           { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { href: '/trainers', label: 'Find Trainers', icon: Search },
           { href: '/sessions', label: 'My Sessions', icon: Calendar },
+          { href: '/safety', label: 'Safety', icon: ShieldCheck },
         ]
       : [
           { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },

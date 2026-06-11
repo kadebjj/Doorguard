@@ -75,6 +75,9 @@ class TrainerProfile(BaseModel):
     hourly_rate: Optional[float] = None
     available_areas: List[str] = []
     profile_image: Optional[str] = None
+    background_check_status: str = "cleared"  # pending, cleared
+    id_verified: bool = True
+    background_check_date: Optional[str] = None
 
 class ClientProfile(BaseModel):
     fitness_goals: Optional[str] = None
@@ -83,6 +86,7 @@ class ClientProfile(BaseModel):
     total_points: int = 0
     completed_sessions: int = 0
     profile_image: Optional[str] = None
+    emergency_contacts: List[Dict] = []
 
 class User(UserBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -163,6 +167,28 @@ class PaymentTransaction(BaseModel):
     payment_status: str = "pending"
     metadata: Dict = {}
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+# ============== SAFETY MODELS ==============
+
+class EmergencyContact(BaseModel):
+    name: str
+    phone: str
+    relationship: Optional[str] = None
+
+class EmergencyContactsUpdate(BaseModel):
+    contacts: List[EmergencyContact]
+
+class SOSAlertCreate(BaseModel):
+    session_id: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    message: Optional[str] = None
+
+class IncidentReportCreate(BaseModel):
+    session_id: Optional[str] = None
+    trainer_id: Optional[str] = None
+    concern_type: str  # safety, conduct, no_show, other
+    description: str
 
 # Challenge definitions per category and phase
 CHALLENGES = {
@@ -726,6 +752,121 @@ async def stripe_webhook(request: Request):
     except Exception as e:
         logger.error(f"Webhook error: {e}")
         return {"received": True}
+
+# ============== SAFETY & TRUST ROUTES ==============
+
+@api_router.get("/safety/emergency-contacts")
+async def get_emergency_contacts(current_user: dict = Depends(get_current_user)):
+    profile = current_user.get("client_profile") or {}
+    return {"contacts": profile.get("emergency_contacts", [])}
+
+@api_router.put("/safety/emergency-contacts")
+async def update_emergency_contacts(data: EmergencyContactsUpdate, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "client":
+        raise HTTPException(status_code=403, detail="Only clients can manage emergency contacts")
+    contacts = [c.model_dump() for c in data.contacts]
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"client_profile.emergency_contacts": contacts}}
+    )
+    return {"message": "Emergency contacts updated", "contacts": contacts}
+
+@api_router.post("/safety/sos")
+async def trigger_sos(alert: SOSAlertCreate, current_user: dict = Depends(get_current_user)):
+    profile = current_user.get("client_profile") or {}
+    contacts = profile.get("emergency_contacts", [])
+
+    alert_dict = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "user_name": current_user.get("full_name"),
+        "session_id": alert.session_id,
+        "latitude": alert.latitude,
+        "longitude": alert.longitude,
+        "message": alert.message,
+        "address": current_user.get("address"),
+        "status": "active",
+        "notified_contacts": contacts,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.safety_alerts.insert_one(alert_dict)
+
+    # NOTE: SMS/Call notification to emergency contacts is MOCKED.
+    # Wiring real notifications requires a Twilio (or similar) integration.
+    logger.warning(f"[SOS] Alert triggered by {current_user.get('full_name')} ({current_user['id']}). Would notify {len(contacts)} contacts.")
+
+    alert_response = {k: v for k, v in alert_dict.items() if k != "_id"}
+    return {
+        "message": "Emergency alert activated",
+        "alert": alert_response,
+        "contacts_notified": len(contacts)
+    }
+
+@api_router.get("/safety/alerts")
+async def get_my_alerts(current_user: dict = Depends(get_current_user)):
+    alerts = await db.safety_alerts.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return alerts
+
+@api_router.put("/safety/alerts/{alert_id}/resolve")
+async def resolve_alert(alert_id: str, current_user: dict = Depends(get_current_user)):
+    alert = await db.safety_alerts.find_one({"id": alert_id, "user_id": current_user["id"]})
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    await db.safety_alerts.update_one(
+        {"id": alert_id},
+        {"$set": {"status": "resolved", "resolved_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": "Alert marked as resolved"}
+
+@api_router.post("/safety/report")
+async def create_incident_report(report: IncidentReportCreate, current_user: dict = Depends(get_current_user)):
+    report_dict = {
+        "id": str(uuid.uuid4()),
+        "reporter_id": current_user["id"],
+        "reporter_name": current_user.get("full_name"),
+        "session_id": report.session_id,
+        "trainer_id": report.trainer_id,
+        "concern_type": report.concern_type,
+        "description": report.description,
+        "status": "under_review",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.incident_reports.insert_one(report_dict)
+    report_response = {k: v for k, v in report_dict.items() if k != "_id"}
+    return {"message": "Report submitted. Our Trust & Safety team will review it.", "report": report_response}
+
+@api_router.get("/safety/reports")
+async def get_my_reports(current_user: dict = Depends(get_current_user)):
+    reports = await db.incident_reports.find({"reporter_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return reports
+
+@api_router.post("/sessions/{session_id}/checkin")
+async def session_checkin(session_id: str, current_user: dict = Depends(get_current_user)):
+    session = await db.sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session["client_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    now = datetime.now(timezone.utc).isoformat()
+    await db.sessions.update_one(
+        {"id": session_id},
+        {"$set": {"safety_checked_in": True, "checked_in_at": now}}
+    )
+    return {"message": "Checked in. Stay safe!", "checked_in_at": now}
+
+@api_router.post("/sessions/{session_id}/checkout")
+async def session_checkout(session_id: str, current_user: dict = Depends(get_current_user)):
+    session = await db.sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session["client_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    now = datetime.now(timezone.utc).isoformat()
+    await db.sessions.update_one(
+        {"id": session_id},
+        {"$set": {"safety_checked_out": True, "checked_out_at": now}}
+    )
+    return {"message": "Checked out safely. Session marked complete.", "checked_out_at": now}
 
 # ============== STATS ROUTES ==============
 

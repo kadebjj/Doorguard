@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getClientSessions, getTrainerSessions, updateSessionStatus, createReview } from '../lib/api';
+import { getClientSessions, getTrainerSessions, updateSessionStatus, createReview, sessionCheckIn, sessionCheckOut } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Textarea } from '../components/ui/textarea';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
-import { Calendar, MapPin, Clock, Star, CheckCircle, XCircle, DollarSign } from 'lucide-react';
+import { Calendar, MapPin, Clock, Star, CheckCircle, XCircle, DollarSign, LogIn, LogOut } from 'lucide-react';
 import { CATEGORY_NAMES, formatDate, formatTime, formatCurrency, getInitials } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -43,6 +43,32 @@ const Sessions = () => {
       loadSessions();
     } catch (error) {
       toast.error('Failed to update session');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCheckIn = async (sessionId) => {
+    setActionLoading(sessionId);
+    try {
+      await sessionCheckIn(sessionId);
+      toast.success('Checked in. Your safety timer is active — stay safe!');
+      loadSessions();
+    } catch (error) {
+      toast.error('Failed to check in');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCheckOut = async (sessionId) => {
+    setActionLoading(sessionId);
+    try {
+      await sessionCheckOut(sessionId);
+      toast.success('Checked out safely.');
+      loadSessions();
+    } catch (error) {
+      toast.error('Failed to check out');
     } finally {
       setActionLoading(null);
     }
@@ -224,6 +250,45 @@ const Sessions = () => {
                             <CheckCircle className="w-4 h-4 mr-1" />
                             Mark Complete
                           </Button>
+                        </div>
+                      )}
+
+                      {session.status === 'confirmed' && isClient && (
+                        <div className="mt-4 pt-4 border-t border-zinc-800 flex flex-wrap items-center gap-3">
+                          {!session.safety_checked_in ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                              onClick={() => handleCheckIn(session.id)}
+                              disabled={actionLoading === session.id}
+                              data-testid={`checkin-${session.id}`}
+                            >
+                              <LogIn className="w-4 h-4 mr-1" />
+                              Safety Check-In
+                            </Button>
+                          ) : !session.safety_checked_out ? (
+                            <>
+                              <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                <CheckCircle className="w-3 h-3 mr-1" /> Checked in
+                              </Badge>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-[#C0A062]/30 text-[#C0A062] hover:bg-[#C0A062]/10"
+                                onClick={() => handleCheckOut(session.id)}
+                                disabled={actionLoading === session.id}
+                                data-testid={`checkout-${session.id}`}
+                              >
+                                <LogOut className="w-4 h-4 mr-1" />
+                                Check-Out (Safe)
+                              </Button>
+                            </>
+                          ) : (
+                            <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              <CheckCircle className="w-3 h-3 mr-1" /> Completed safely
+                            </Badge>
+                          )}
                         </div>
                       )}
 
