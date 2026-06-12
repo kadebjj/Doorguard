@@ -12,19 +12,19 @@ const Landing = () => {
       id: 'personal_training',
       title: 'Personal Training',
       description: 'Health, strength, and resilience. Build your foundation.',
-      image: 'https://images.pexels.com/photos/8292833/pexels-photo-8292833.jpeg',
+      image: 'https://images.unsplash.com/photo-1648542036561-e1d66a5ae2b1?w=800',
     },
     {
       id: 'self_defense',
       title: 'Self Defense',
       description: 'Awareness, escape, and real-world readiness.',
-      image: 'https://images.unsplash.com/photo-1542937306-d1056fdd367a?w=800',
+      image: 'https://images.unsplash.com/photo-1611077479643-5b3c01381f9e?w=800',
     },
     {
       id: 'jiujitsu',
       title: 'Jiu-Jitsu',
       description: 'Control, grappling, and submission fundamentals.',
-      image: 'https://images.unsplash.com/photo-1598300606161-4019d0dfec28?w=800',
+      image: 'https://images.unsplash.com/photo-1747331796135-0e2354a712e4?w=800',
     },
   ];
 
@@ -46,8 +46,8 @@ const Landing = () => {
     },
     {
       icon: Users,
-      title: 'Home Training',
-      description: 'Professional training in the comfort and privacy of your home.',
+      title: 'Train Anywhere',
+      description: 'Professional training at your home, office, gym, or wherever works for you.',
     },
   ];
 
@@ -79,7 +79,7 @@ const Landing = () => {
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
               Your Personal Defense,{' '}
-              <span className="text-[#C0A062]">At Home</span>
+              <span className="text-[#C0A062]">Anywhere</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-zinc-300 mb-8 max-w-2xl">
@@ -247,7 +247,7 @@ const Landing = () => {
       <section className="py-24 bg-[#0F0F11]" data-testid="features-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Why DoorGuard</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Training Offered To You Anywhere</h2>
             <p className="text-zinc-400 max-w-2xl mx-auto">
               Built for real safety, not fantasy fighting.
             </p>
@@ -350,7 +350,7 @@ const Landing = () => {
               <span className="font-bold text-white">DOORGUARD</span>
             </div>
             <p className="text-sm text-zinc-500">
-              © 2025 DoorGuard. Your Personal Defense, At Home.
+              © 2025 DoorGuard. Your Personal Defense, Anywhere.
             </p>
           </div>
         </div>
